@@ -43,5 +43,6 @@ node --experimental-default-type=module tests/calculations.test.js
 ## Current calculation assumptions
 
 - Realized gains and remaining cost basis use FIFO lots.
+- If transactions share the same date, buys are processed before sells because Phase 1 data does not include intraday timestamps.
 - Holding period is the weighted-average age of open positions on the valuation date.
 - XIRR uses actual transaction dates and includes current market value as a terminal inflow on the valuation date.

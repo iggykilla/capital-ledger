@@ -85,6 +85,30 @@ test("xirr returns null when there is no valid positive-and-negative cash-flow s
   assert.equal(getXirr([], {}, "2026-01-01"), null);
 });
 
+test("xirr ignores transactions that happen after the valuation date", () => {
+  const transactions = [
+    { date: "2026-01-01", ticker: "FLOW", type: "BUY", shares: 10, price: 100, fees: 0 },
+    { date: "2026-12-01", ticker: "FLOW", type: "BUY", shares: 5, price: 100, fees: 0 },
+  ];
+  const valuationDate = "2026-06-30";
+  const marketPrices = { FLOW: 110 };
+  const expectedXirr = 1.1 ** (365 / 180) - 1;
+
+  assertClose(getXirr(transactions, marketPrices, valuationDate), expectedXirr, 0.000001);
+});
+
+test("same-day buys are processed before same-day sells when only date precision is available", () => {
+  const transactions = [
+    { date: "2026-05-01", ticker: "DAY", type: "SELL", shares: 5, price: 12, fees: 0 },
+    { date: "2026-05-01", ticker: "DAY", type: "BUY", shares: 10, price: 10, fees: 0 },
+  ];
+  const marketPrices = { DAY: 11 };
+
+  assert.equal(getRealizedGainLoss(transactions), 10);
+  assert.equal(getRemainingCostBasis(transactions), 50);
+  assert.equal(getCurrentMarketValue(transactions, marketPrices), 55);
+});
+
 test("portfolio metrics bundle the required calculation outputs", () => {
   const transactions = [{ date: "2026-01-01", ticker: "ONE", type: "BUY", shares: 1, price: 100, fees: 0 }];
   const marketPrices = { ONE: 110 };

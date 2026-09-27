@@ -1,7 +1,31 @@
 import { daysBetween, roundTo } from "./utils.js";
 
 function sortTransactions(transactions) {
-  return [...transactions].sort((left, right) => left.date.localeCompare(right.date));
+  const typePriority = {
+    BUY: 0,
+    DIVIDEND: 1,
+    FEE: 2,
+    SELL: 3,
+  };
+
+  return transactions
+    .map((transaction, index) => ({ transaction, index }))
+    .sort((left, right) => {
+      const dateComparison = left.transaction.date.localeCompare(right.transaction.date);
+
+      if (dateComparison !== 0) {
+        return dateComparison;
+      }
+
+      const typeComparison = (typePriority[left.transaction.type] ?? 99) - (typePriority[right.transaction.type] ?? 99);
+
+      if (typeComparison !== 0) {
+        return typeComparison;
+      }
+
+      return left.index - right.index;
+    })
+    .map(({ transaction }) => transaction);
 }
 
 function getTransactionAmount(transaction) {
@@ -204,9 +228,10 @@ export function getHoldingPeriodDays(transactions, valuationDate) {
 }
 
 export function buildXirrCashFlows(transactions, marketPrices, valuationDate) {
+  const datedTransactions = sortTransactions(transactions).filter((transaction) => transaction.date <= valuationDate);
   const cashFlows = [];
 
-  for (const transaction of sortTransactions(transactions)) {
+  for (const transaction of datedTransactions) {
     if (transaction.type === "BUY") {
       cashFlows.push({
         date: transaction.date,
@@ -239,7 +264,7 @@ export function buildXirrCashFlows(transactions, marketPrices, valuationDate) {
     }
   }
 
-  const terminalValue = getCurrentMarketValue(transactions, marketPrices);
+  const terminalValue = getCurrentMarketValue(datedTransactions, marketPrices);
 
   if (terminalValue !== 0) {
     cashFlows.push({
@@ -375,6 +400,7 @@ export function getPortfolioMetrics(transactions, marketPrices, valuationDate) {
 
 export const calculationAssumptions = [
   "Realized gains and remaining cost basis use FIFO lots.",
+  "When multiple trades share the same date, buys are processed before sells because the data model does not include intraday timestamps.",
   "Holding period is the weighted-average age of currently open shares.",
   "XIRR uses dated cash flows and adds current market value on the valuation date as the terminal inflow.",
   "Dividend transactions use the explicit cash amount supplied in the data.",
