@@ -1,18 +1,22 @@
-# Capital Ledger (UI Transplant Phase)
+# Capital Ledger
 
-Capital Ledger is a React + TypeScript + Vite UI shell for an investment decision terminal.
+Capital Ledger is a React + TypeScript + Vite UI shell for an investment decision terminal. Its layout and interaction patterns selectively adapt the `iggykilla/ai-studio` prototype while keeping this repository's separate views, context, demo data and calculation boundary.
 
 ## Scope of this phase
 
-This repository currently implements a **UI transplant phase** with:
+The current UI includes:
 
 - Primary navigation: **Portfolio**, **Metrics**, **Logs**, **Analysis**
 - Position drill-down flow: **Portfolio → Position Detail**
-- Information-dense desktop layout and mobile bottom navigation
+- A responsive position ledger, desktop navigation and mobile bottom navigation
+- Per-holding inclusion switches that update the synthetic portfolio snapshot and weights
+- Position detail with lot and transaction records and a lot/income dialog
+- Searchable, filterable, read-only synthetic decision journal
+- Clearly marked pending spaces for validated metrics and research modules
 - Synthetic demo holdings, transactions, market prices, and decision logs
 - Explicit placeholder calculation layer (`src/calculations/demoPortfolioCalculations.ts`)
 
-> Financial outputs in this phase are synthetic/placeholder and are **not** validated portfolio accounting or XIRR logic.
+> Portfolio value, profit, return, weight and dividend figures are synthetic demo outputs, **not** validated accounting. Annualized return / XIRR, benchmark comparisons and performance attribution are shown as **Pending**. The weighted annualized placeholder still exists in `demoPortfolioCalculations.ts` for demo compatibility, but the UI does not display it as XIRR. No broker feed, AI integration, or investment recommendations are implemented.
 
 ## Architecture
 
@@ -37,6 +41,7 @@ npm run dev
 
 ```bash
 npm run build
+npm run lint
 npm run preview
 ```
 

@@ -1,7 +1,9 @@
+import { ViewIcon } from '../common/ViewIcon'
 import type { PrimaryView } from '../../types'
 
 interface HeaderProps {
   activeView: PrimaryView
+  isDetail: boolean
   onViewChange: (view: PrimaryView) => void
 }
 
@@ -12,25 +14,31 @@ const navItems: { label: string; view: PrimaryView }[] = [
   { label: 'Analysis', view: 'analysis' },
 ]
 
-export const Header = ({ activeView, onViewChange }: HeaderProps) => {
-  return (
-    <header className="app-header">
-      <div>
-        <p className="app-kicker">Capital Ledger</p>
-        <h1>Measure decisions, not just portfolio value.</h1>
+export const Header = ({ activeView, isDetail, onViewChange }: HeaderProps) => (
+  <header className="app-header">
+    <div className="header-inner">
+      <div className="brand">
+        <span className="brand-mark" aria-hidden="true">CL<span className="brand-dot">.</span></span>
+        <span className="brand-copy">
+          <strong>Capital Ledger</strong>
+          <small>Investment decision terminal</small>
+        </span>
       </div>
-      <nav className="desktop-nav" aria-label="Primary">
-        {navItems.map((item) => (
+      <nav className="desktop-nav" aria-label="Primary navigation">
+        {navItems.map(({ label, view }) => (
           <button
             type="button"
-            key={item.view}
-            className={item.view === activeView ? 'active' : ''}
-            onClick={() => onViewChange(item.view)}
+            key={view}
+            className={activeView === view && !isDetail ? 'active' : ''}
+            aria-current={activeView === view && !isDetail ? 'page' : undefined}
+            onClick={() => onViewChange(view)}
           >
-            {item.label}
+            <ViewIcon view={view} />
+            {label}
           </button>
         ))}
       </nav>
-    </header>
-  )
-}
+      <span className="header-status"><span className="status-dot" /> Demo workspace</span>
+    </div>
+  </header>
+)
