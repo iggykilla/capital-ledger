@@ -1,0 +1,85 @@
+import type { DecisionLogEntry, Holding, MarketPricePoint, Transaction } from '../types'
+
+export const demoHoldings: Holding[] = [
+  {
+    ticker: 'DEMO',
+    name: 'Demo Industries',
+    shares: 120,
+    averageCost: 48.5,
+    currentPrice: 61.2,
+    annualizedReturnPlaceholderPct: 10.4,
+    dividendIncomePlaceholder: 132,
+    realizedPnLPlaceholder: 210,
+    lots: [
+      { id: 'DEMO-1', acquiredOn: '2025-03-11', shares: 70, price: 45.1, fees: 1.5 },
+      { id: 'DEMO-2', acquiredOn: '2025-11-04', shares: 50, price: 53.3, fees: 1.2 },
+    ],
+  },
+  {
+    ticker: 'ALFA',
+    name: 'Alpha Utilities',
+    shares: 80,
+    averageCost: 72.25,
+    currentPrice: 68.7,
+    annualizedReturnPlaceholderPct: -2.1,
+    dividendIncomePlaceholder: 204,
+    realizedPnLPlaceholder: 95,
+    lots: [
+      { id: 'ALFA-1', acquiredOn: '2024-08-20', shares: 40, price: 70.3, fees: 1.3 },
+      { id: 'ALFA-2', acquiredOn: '2026-01-08', shares: 40, price: 74.2, fees: 1.4 },
+    ],
+  },
+  {
+    ticker: 'NOVA',
+    name: 'Nova Retail Group',
+    shares: 52,
+    averageCost: 110.75,
+    currentPrice: 134.4,
+    annualizedReturnPlaceholderPct: 13.8,
+    dividendIncomePlaceholder: 0,
+    realizedPnLPlaceholder: -42,
+    lots: [{ id: 'NOVA-1', acquiredOn: '2025-06-17', shares: 52, price: 110.75, fees: 2.2 }],
+  },
+]
+
+export const demoTransactions: Transaction[] = [
+  { id: 'tx-1', date: '2025-03-11', ticker: 'DEMO', type: 'BUY', shares: 70, price: 45.1, amount: 3157, fees: 1.5 },
+  { id: 'tx-2', date: '2025-11-04', ticker: 'DEMO', type: 'BUY', shares: 50, price: 53.3, amount: 2665, fees: 1.2 },
+  { id: 'tx-3', date: '2026-04-17', ticker: 'DEMO', type: 'DIVIDEND', amount: 132, notes: 'Quarterly dividend (synthetic)' },
+  { id: 'tx-4', date: '2024-08-20', ticker: 'ALFA', type: 'BUY', shares: 40, price: 70.3, amount: 2812, fees: 1.3 },
+  { id: 'tx-5', date: '2026-01-08', ticker: 'ALFA', type: 'BUY', shares: 40, price: 74.2, amount: 2968, fees: 1.4 },
+  { id: 'tx-6', date: '2026-06-30', ticker: 'ALFA', type: 'DIVIDEND', amount: 204, notes: 'Semiannual dividend (synthetic)' },
+  { id: 'tx-7', date: '2025-06-17', ticker: 'NOVA', type: 'BUY', shares: 52, price: 110.75, amount: 5759, fees: 2.2 },
+]
+
+export const demoMarketPrices: MarketPricePoint[] = [
+  { ticker: 'DEMO', asOf: '2026-09-26', price: 61.2 },
+  { ticker: 'ALFA', asOf: '2026-09-26', price: 68.7 },
+  { ticker: 'NOVA', asOf: '2026-09-26', price: 134.4 },
+]
+
+export const demoDecisionLogs: DecisionLogEntry[] = [
+  {
+    id: 'log-1',
+    date: '2026-07-10',
+    ticker: 'DEMO',
+    action: 'HOLD',
+    thesis: 'Margin expansion through operating leverage',
+    expectedReturn: 'High single-digit annualized',
+    valuation: 'Near fair value',
+    reason: 'Execution remains stable; no sizing change needed.',
+    notes: 'Synthetic entry for UI shell.',
+  },
+  {
+    id: 'log-2',
+    date: '2026-08-22',
+    ticker: 'ALFA',
+    action: 'POSITION_SIZING',
+    price: 69.1,
+    amount: 1382,
+    thesis: 'Income anchor with resilient cash flow',
+    expectedReturn: 'Mid single-digit total return',
+    valuation: 'Slightly discounted to sector',
+    reason: 'Rebalanced for concentration control.',
+  },
+]
