@@ -17,6 +17,26 @@
   --amber: #efc57b;
   --red: #ff9f9c;
   --mono: "JetBrains Mono", "Cascadia Code", ui-monospace, SFMono-Regular, monospace;
+  /* Semantic aliases for the design reference; keep existing CSS variables usable. */
+  --bg: var(--surface);
+  --surface-1: var(--deep);
+  --surface-2: var(--raised);
+  --surface-3: #1e2b3e;
+  --text-primary: var(--text);
+  --text-secondary: var(--subtle);
+  --text-muted: var(--muted);
+  --accent: var(--blue);
+  --positive: var(--green);
+  --negative: var(--red);
+  --income: var(--amber);
+  --warning: #fbbf24;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
 }
 
 * { box-sizing: border-box; }
@@ -69,14 +89,14 @@ small { font-size: .75rem; }
 .tag-inline { vertical-align: middle; padding: .16rem .34rem; margin-left: .2rem; color: var(--amber); background: #382f24; border-color: #66533b; }
 .data-notice { display: flex; align-items: flex-start; gap: .68rem; padding: .8rem .95rem; background: #1c2730; border: 1px solid #355466; border-radius: 9px; color: #bdcfdb; font-size: .79rem; line-height: 1.5; }
 .notice-mark { font: 700 .8rem var(--mono); color: var(--blue); border: 1px solid #4f8fae; border-radius: 50%; width: 18px; height: 18px; flex: 0 0 18px; line-height: 16px; text-align: center; }
-.panel, .hero-panel, .detail-hero, .journal-feature { border: 1px solid var(--border); background: var(--raised); border-radius: 13px; }
+.panel, .hero-panel, .detail-hero, .journal-feature { border: 1px solid var(--border); background: var(--raised); border-radius: 8px; }
 .panel { padding: 1.25rem; }
 .section-heading { align-items: center; margin-bottom: 1rem; }
 .section-heading h2 { margin-bottom: .22rem; }
 .section-meta { font: 500 .7rem var(--mono); color: var(--muted); white-space: nowrap; }
 .table-footnote { border-top: 1px solid var(--border-soft); color: var(--muted); font-size: .73rem; line-height: 1.5; margin: 1rem 0 0; padding-top: .8rem; }
 
-.hero-panel { padding: 1.5rem; background: linear-gradient(165deg, #202a35, #1b222d 58%); }
+.hero-panel { padding: 1.5rem; background: var(--surface-2); }
 .hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; }
 .hero-value { font: 600 clamp(2.1rem, 5vw, 3.1rem)/1.13 var(--mono); letter-spacing: -.055em; margin: .45rem 0 .3rem; color: #f3f6fa; }
 .hero-pending { border-left: 1px solid #47515d; padding-left: 1.25rem; min-width: 208px; display: grid; gap: .35rem; }
@@ -96,7 +116,8 @@ small { font-size: .75rem; }
 table { border-collapse: collapse; width: 100%; text-align: left; }
 th { color: var(--muted); font: 600 .66rem var(--mono); text-transform: uppercase; letter-spacing: .035em; background: var(--deep); white-space: nowrap; }
 td { font-size: .81rem; color: #d7e1ed; }
-th, td { border-bottom: 1px solid var(--border-soft); padding: .85rem .7rem; vertical-align: middle; }
+th, td { border-bottom: 1px solid var(--border-soft); padding: .7rem .7rem; vertical-align: middle; }
+.holdings-table th:nth-child(n + 2):nth-child(-n + 7), .holdings-table td:nth-child(n + 2):nth-child(-n + 7) { text-align: right; }
 tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: #242d38; }
 .holdings-table { min-width: 960px; }
@@ -113,7 +134,10 @@ tbody tr:hover { background: #242d38; }
 .ticker-link:hover, .text-button:hover, .back-link:hover { text-decoration: underline; }
 .text-button { font-size: .76rem; white-space: nowrap; }
 .arrow-button { display: inline-flex; align-items: center; gap: .27rem; }
-.excluded-row td:not(:nth-last-child(-n + 2)) { opacity: .62; }
+.excluded-row { background: #1a2029; }
+.excluded-row td:nth-child(-n + 7) { color: var(--subtle); }
+.excluded-row .positive, .excluded-row .negative, .excluded-row .income { color: var(--subtle) !important; }
+.excluded-row .instrument-icon { color: var(--subtle); border-color: var(--border); background: var(--surface-1); }
 .switch-input { appearance: none; position: relative; width: 38px; height: 22px; margin: 0; border-radius: 999px; border: 1px solid #657180; background: #303a46; cursor: pointer; vertical-align: middle; transition: background .15s; flex: 0 0 auto; }
 .switch-input::before { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #c6d1dc; transition: transform .15s; }
 .switch-input:checked { background: #245b6e; border-color: #5db5d4; }
@@ -254,7 +278,9 @@ tbody tr:hover { background: #242d38; }
   .desktop-ledger { display: none; }
   .mobile-ledger { display: grid; gap: .65rem; }
   .holding-card { padding: .95rem; border: 1px solid var(--border-soft); border-radius: 9px; background: var(--deep); }
-  .holding-card.is-excluded { border-style: dashed; }
+  .holding-card.is-excluded { border-style: dashed; background: #1a2029; }
+  .holding-card.is-excluded .instrument-icon { color: var(--subtle); border-color: var(--border); background: var(--surface-1); }
+  .holding-card.is-excluded .positive, .holding-card.is-excluded .negative, .holding-card.is-excluded .income { color: var(--subtle) !important; }
   .holding-card-top, .holding-card-footer { display: flex; align-items: center; justify-content: space-between; gap: .7rem; }
   .holding-value { display: grid; gap: .25rem; text-align: right; }
   .holding-value strong { font: 600 .96rem var(--mono); }

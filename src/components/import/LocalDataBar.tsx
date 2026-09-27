@@ -16,7 +16,7 @@ export const LocalDataBar = ({ status, onImport, onClear }: LocalDataBarProps) =
   return (
     <section className="local-data-bar" aria-label="Local portfolio data status">
       <div>
-        <span className="eyebrow">{hasLocalData ? 'LOCAL DATA STORED' : 'DEMO MODE'}</span>
+        <span className="eyebrow">{hasLocalData ? 'LOCAL DATA · STORED IN THIS BROWSER' : 'DEMO MODE'}</span>
         <strong>{hasLocalData ? `${status?.transactionCount ?? 0} transactions` : 'No local portfolio imported'}</strong>
         <small>
           {hasLocalData
