@@ -20,15 +20,21 @@ const rows = [
   ["XIRR", metrics.xirr === null ? "Not available" : formatPercent(metrics.xirr)],
 ];
 
-summaryTableBody.innerHTML = rows
-  .map(
-    ([label, value]) => `
-      <tr>
-        <th scope="row">${label}</th>
-        <td>${value}</td>
-      </tr>
-    `,
-  )
-  .join("");
+for (const [label, value] of rows) {
+  const tableRow = document.createElement("tr");
+  const labelCell = document.createElement("th");
+  const valueCell = document.createElement("td");
 
-assumptionsList.innerHTML = assumptions.map((assumption) => `<li>${assumption}</li>`).join("");
+  labelCell.scope = "row";
+  labelCell.textContent = label;
+  valueCell.textContent = value;
+
+  tableRow.append(labelCell, valueCell);
+  summaryTableBody.append(tableRow);
+}
+
+for (const assumption of assumptions) {
+  const listItem = document.createElement("li");
+  listItem.textContent = assumption;
+  assumptionsList.append(listItem);
+}

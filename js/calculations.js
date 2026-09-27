@@ -252,6 +252,10 @@ export function buildXirrCashFlows(transactions, marketPrices, valuationDate) {
 }
 
 function xnpv(rate, cashFlows) {
+  if (rate <= -0.999999 || cashFlows.length === 0) {
+    return Number.POSITIVE_INFINITY;
+  }
+
   const firstDate = cashFlows[0].date;
 
   return cashFlows.reduce((total, cashFlow) => {
@@ -261,6 +265,10 @@ function xnpv(rate, cashFlows) {
 }
 
 function xnpvDerivative(rate, cashFlows) {
+  if (rate <= -0.999999 || cashFlows.length === 0) {
+    return Number.POSITIVE_INFINITY;
+  }
+
   const firstDate = cashFlows[0].date;
 
   return cashFlows.reduce((total, cashFlow) => {
@@ -276,6 +284,11 @@ function xnpvDerivative(rate, cashFlows) {
 
 export function getXirr(transactions, marketPrices, valuationDate, guess = 0.1) {
   const cashFlows = buildXirrCashFlows(transactions, marketPrices, valuationDate);
+
+  if (cashFlows.length === 0) {
+    return null;
+  }
+
   const hasPositiveFlow = cashFlows.some((cashFlow) => cashFlow.amount > 0);
   const hasNegativeFlow = cashFlows.some((cashFlow) => cashFlow.amount < 0);
 
@@ -292,9 +305,13 @@ export function getXirr(transactions, marketPrices, valuationDate, guess = 0.1) 
       return roundTo(rate, 6);
     }
 
+    if (rate <= -0.999999) {
+      break;
+    }
+
     const derivative = xnpvDerivative(rate, cashFlows);
 
-    if (Math.abs(derivative) < 1e-10) {
+    if (!Number.isFinite(derivative) || Math.abs(derivative) < 1e-10) {
       break;
     }
 

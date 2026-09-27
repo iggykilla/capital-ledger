@@ -81,6 +81,10 @@ test("xirr uses irregular cash-flow dates instead of a simple average return app
   assertClose(getXirr(transactions, marketPrices, valuationDate), 0.1, 0.000001);
 });
 
+test("xirr returns null when there is no valid positive-and-negative cash-flow set", () => {
+  assert.equal(getXirr([], {}, "2026-01-01"), null);
+});
+
 test("portfolio metrics bundle the required calculation outputs", () => {
   const transactions = [{ date: "2026-01-01", ticker: "ONE", type: "BUY", shares: 1, price: 100, fees: 0 }];
   const marketPrices = { ONE: 110 };
