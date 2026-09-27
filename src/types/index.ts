@@ -52,7 +52,7 @@ export interface DecisionLogEntry {
     | 'VALUATION_UPDATE'
     | 'PORTFOLIO_OVERRIDE'
     | 'POSITION_SIZING'
-    | 'NOTES'
+    | 'NOTE'
   price?: number
   amount?: number
   thesis?: string
