@@ -37,8 +37,8 @@ export const LogsView = ({ entries }: LogsViewProps) => {
                   <td>{entry.date}</td>
                   <td>{entry.ticker}</td>
                   <td>{entry.action}</td>
-                  <td>{entry.price ? `$${entry.price.toFixed(2)}` : '-'}</td>
-                  <td>{entry.amount ? `$${entry.amount.toFixed(0)}` : '-'}</td>
+                  <td>{entry.price !== undefined ? `$${entry.price.toFixed(2)}` : '-'}</td>
+                  <td>{entry.amount !== undefined ? `$${entry.amount.toFixed(0)}` : '-'}</td>
                   <td>{entry.thesis ?? '-'}</td>
                   <td>{entry.expectedReturn ?? '-'}</td>
                   <td>{entry.valuation ?? '-'}</td>

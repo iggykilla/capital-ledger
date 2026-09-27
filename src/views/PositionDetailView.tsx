@@ -104,7 +104,7 @@ export const PositionDetailView = ({ holding, summary, transactions, onBack }: P
                   <td>{transaction.date}</td>
                   <td>{transaction.type}</td>
                   <td>{transaction.shares ?? '-'}</td>
-                  <td>{transaction.price ? currencyFormat.format(transaction.price) : '-'}</td>
+                  <td>{transaction.price !== undefined ? currencyFormat.format(transaction.price) : '-'}</td>
                   <td>{currencyFormat.format(transaction.amount)}</td>
                 </tr>
               ))}

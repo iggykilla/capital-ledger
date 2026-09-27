@@ -87,6 +87,7 @@ export const PortfolioView = ({
                         <input
                           type="checkbox"
                           checked={isIncluded}
+                          aria-label={`Include ${holding.ticker} ${holding.name} in portfolio summary`}
                           onChange={() => onToggleHolding(holding.ticker)}
                         />
                         <span>{isIncluded ? 'ON' : 'OFF'}</span>

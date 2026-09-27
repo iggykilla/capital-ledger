@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { Header } from './components/layout/Header'
 import { MobileNav } from './components/layout/MobileNav'
 import { useAppContext } from './context/AppContext'
@@ -24,12 +26,10 @@ function App() {
 
   const handleViewChange = (view: 'portfolio' | 'metrics' | 'logs' | 'analysis') => {
     setActiveView(view)
-    if (view !== 'portfolio') {
-      clearSelectedHolding()
-    }
+    clearSelectedHolding()
   }
 
-  let content: React.ReactNode
+  let content: ReactNode
 
   if (selectedHolding) {
     content = (

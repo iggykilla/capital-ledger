@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
 
 import { calculateDemoPortfolioSummary } from '../calculations/demoPortfolioCalculations'
 import { demoDecisionLogs, demoHoldings, demoMarketPrices, demoTransactions } from '../data/demoData'
@@ -21,12 +22,12 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | undefined>(undefined)
 
-const defaultIncludedTickers = new Set(demoHoldings.map((holding) => holding.ticker))
-
-export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [activeView, setActiveView] = useState<PrimaryView>('portfolio')
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null)
-  const [includedTickers, setIncludedTickers] = useState<Set<string>>(defaultIncludedTickers)
+  const [includedTickers, setIncludedTickers] = useState<Set<string>>(
+    () => new Set(demoHoldings.map((holding) => holding.ticker)),
+  )
 
   const selectedHolding = useMemo(
     () => demoHoldings.find((holding) => holding.ticker === selectedTicker) ?? null,
