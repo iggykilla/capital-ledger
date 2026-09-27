@@ -1,18 +1,7 @@
 import { parseLocaleNumber } from './csv.ts'
-import type { LedgerTransaction, LedgerTransactionType, StatementAdapter } from './types'
+import type { LedgerTransactionType, StatementAdapter } from './types'
 
 const normalizedHeaders = ['date', 'type', 'currency']
-const allowedTypes = new Set<LedgerTransactionType>([
-  'BUY',
-  'SELL',
-  'DIVIDEND',
-  'FEE',
-  'TAX',
-  'INTEREST',
-  'TRANSFER',
-  'CASH',
-])
-
 const rowObject = (headers: string[], row: string[]) =>
   Object.fromEntries(headers.map((header, index) => [header.trim().toLowerCase(), row[index] ?? '']))
 

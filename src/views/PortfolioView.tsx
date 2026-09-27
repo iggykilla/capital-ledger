@@ -112,7 +112,7 @@ export const PortfolioView = ({
                         <td className={`numeric ${totalReturn >= 0 ? 'positive' : 'negative'}`}>{formatPercent(totalReturn, true)}</td>
                         <td className="numeric income">{formatMoney(holding.dividendIncomePlaceholder)}</td>
                         <td className="numeric">{included ? formatPercent(summary.weightsByTicker[holding.ticker] ?? 0) : '—'}</td>
-                        <td><input className="switch-input" type="checkbox" checked={included} aria-label={`Include ${holding.ticker} in portfolio snapshot`} onChange={() => onToggleHolding(holding.ticker)} /></td>
+                        <td><label className="switch-label"><input className="switch-input" type="checkbox" checked={included} aria-label={`Include ${holding.ticker} in portfolio snapshot`} onChange={() => onToggleHolding(holding.ticker)} /><span>{included ? 'Included' : 'Excluded'}</span></label></td>
                         <td><button className="text-button" type="button" onClick={() => onOpenLots(holding)}>Lots</button></td>
                       </tr>
                     )

@@ -1,5 +1,7 @@
 # Capital Ledger
 
+Design direction and verified implementation boundaries: [Design system](docs/design/CAPITAL_LEDGER_DESIGN_SYSTEM.md) · [Product areas](docs/design/PRODUCT_INFORMATION_ARCHITECTURE.md) · [Screen reference](docs/design/SCREEN_REFERENCE.md) · [Implementation status](docs/design/IMPLEMENTATION_STATUS.md).
+
 Capital Ledger is a React + TypeScript + Vite UI shell for an investment decision terminal. Its layout and interaction patterns selectively adapt the `iggykilla/ai-studio` prototype while keeping this repository's separate views, context, demo data and calculation boundary.
 
 ## Scope of this phase

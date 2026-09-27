@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 
 import { detectStatementAdapter } from '../../import/adapters'
 import { parseCsv } from '../../import/csv'
-import { fingerprintTransaction, splitByExistingFingerprints } from '../../import/fingerprint'
+import { splitByExistingFingerprints } from '../../import/fingerprint'
 import type { LedgerTransaction } from '../../import/types'
 import { validateLedgerTransaction } from '../../import/validation'
 import { getExistingFingerprints, saveImport } from '../../storage/indexedDb'
