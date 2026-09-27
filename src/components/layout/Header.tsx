@@ -5,6 +5,7 @@ interface HeaderProps {
   activeView: PrimaryView
   isDetail: boolean
   onViewChange: (view: PrimaryView) => void
+  onImportData: () => void
 }
 
 const navItems: { label: string; view: PrimaryView }[] = [
@@ -14,7 +15,7 @@ const navItems: { label: string; view: PrimaryView }[] = [
   { label: 'Analysis', view: 'analysis' },
 ]
 
-export const Header = ({ activeView, isDetail, onViewChange }: HeaderProps) => (
+export const Header = ({ activeView, isDetail, onViewChange, onImportData }: HeaderProps) => (
   <header className="app-header">
     <div className="header-inner">
       <div className="brand">
@@ -38,6 +39,7 @@ export const Header = ({ activeView, isDetail, onViewChange }: HeaderProps) => (
           </button>
         ))}
       </nav>
+      <button type="button" className="header-import-button" onClick={onImportData}>Import data</button>
       <span className="header-status"><span className="status-dot" /> Demo workspace</span>
     </div>
   </header>
