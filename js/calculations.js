@@ -101,25 +101,7 @@ export function analyzeTransactions(transactions) {
   };
 }
 
-export function getTotalInvestedCapital(transactions) {
-  return roundTo(
-    transactions.reduce((total, transaction) => {
-      if (transaction.type === "BUY") {
-        return total + transaction.shares * transaction.price + (transaction.fees ?? 0);
-      }
-
-      if (transaction.type === "FEE") {
-        return total + getTransactionAmount(transaction);
-      }
-
-      return total;
-    }, 0),
-  );
-}
-
-export function getRemainingCostBasis(transactions) {
-  const { lotsByTicker } = analyzeTransactions(transactions);
-
+function getRemainingCostBasisFromLots(lotsByTicker) {
   let remainingCostBasis = 0;
 
   for (const lots of lotsByTicker.values()) {
@@ -131,9 +113,7 @@ export function getRemainingCostBasis(transactions) {
   return roundTo(remainingCostBasis);
 }
 
-export function getCurrentMarketValue(transactions, marketPrices) {
-  const { lotsByTicker } = analyzeTransactions(transactions);
-
+function getCurrentMarketValueFromLots(lotsByTicker, marketPrices) {
   let currentMarketValue = 0;
 
   for (const [ticker, lots] of lotsByTicker.entries()) {
@@ -153,6 +133,52 @@ export function getCurrentMarketValue(transactions, marketPrices) {
   }
 
   return roundTo(currentMarketValue);
+}
+
+function getHoldingPeriodDaysFromLots(lotsByTicker, valuationDate) {
+  let weightedDays = 0;
+  let totalShares = 0;
+
+  // Remaining shares inherit the purchase date of the lot they still belong to, so the holding
+  // period here is the weighted average age of the currently open lots on the valuation date.
+  for (const lots of lotsByTicker.values()) {
+    for (const lot of lots) {
+      weightedDays += lot.sharesRemaining * daysBetween(lot.purchaseDate, valuationDate);
+      totalShares += lot.sharesRemaining;
+    }
+  }
+
+  if (totalShares === 0) {
+    return 0;
+  }
+
+  return roundTo(weightedDays / totalShares, 2);
+}
+
+export function getTotalInvestedCapital(transactions) {
+  return roundTo(
+    transactions.reduce((total, transaction) => {
+      if (transaction.type === "BUY") {
+        return total + transaction.shares * transaction.price + (transaction.fees ?? 0);
+      }
+
+      if (transaction.type === "FEE") {
+        return total + getTransactionAmount(transaction);
+      }
+
+      return total;
+    }, 0),
+  );
+}
+
+export function getRemainingCostBasis(transactions) {
+  const { lotsByTicker } = analyzeTransactions(transactions);
+  return getRemainingCostBasisFromLots(lotsByTicker);
+}
+
+export function getCurrentMarketValue(transactions, marketPrices) {
+  const { lotsByTicker } = analyzeTransactions(transactions);
+  return getCurrentMarketValueFromLots(lotsByTicker, marketPrices);
 }
 
 export function getRealizedGainLoss(transactions) {
@@ -208,26 +234,12 @@ export function getSimpleTotalReturn(transactions, marketPrices) {
 
 export function getHoldingPeriodDays(transactions, valuationDate) {
   const { lotsByTicker } = analyzeTransactions(transactions);
-  let weightedDays = 0;
-  let totalShares = 0;
-
-  // Remaining shares inherit the purchase date of the lot they still belong to, so the holding
-  // period here is the weighted average age of the currently open lots on the valuation date.
-  for (const lots of lotsByTicker.values()) {
-    for (const lot of lots) {
-      weightedDays += lot.sharesRemaining * daysBetween(lot.purchaseDate, valuationDate);
-      totalShares += lot.sharesRemaining;
-    }
-  }
-
-  if (totalShares === 0) {
-    return 0;
-  }
-
-  return roundTo(weightedDays / totalShares, 2);
+  return getHoldingPeriodDaysFromLots(lotsByTicker, valuationDate);
 }
 
 export function buildXirrCashFlows(transactions, marketPrices, valuationDate) {
+  // All date-based metrics use end-of-day valuation semantics, so a valuation date includes
+  // every transaction dated that day before the terminal market value is appended.
   const datedTransactions = sortTransactions(transactions).filter((transaction) => transaction.date <= valuationDate);
   const cashFlows = [];
 
@@ -384,16 +396,26 @@ export function getXirr(transactions, marketPrices, valuationDate, guess = 0.1) 
 }
 
 export function getPortfolioMetrics(transactions, marketPrices, valuationDate) {
+  const analysis = analyzeTransactions(transactions);
+  const remainingCostBasis = getRemainingCostBasisFromLots(analysis.lotsByTicker);
+  const currentMarketValue = getCurrentMarketValueFromLots(analysis.lotsByTicker, marketPrices);
+  const realizedGainLoss = roundTo(analysis.realizedGainLoss);
+  const unrealizedGainLoss = roundTo(currentMarketValue - remainingCostBasis);
+  const dividendIncome = getDividendIncome(transactions);
+  const feeExpenses = getFeeExpenses(transactions);
+  const totalEconomicProfit = roundTo(realizedGainLoss + unrealizedGainLoss + dividendIncome - feeExpenses);
+  const totalInvestedCapital = getTotalInvestedCapital(transactions);
+
   return {
-    totalInvestedCapital: getTotalInvestedCapital(transactions),
-    remainingCostBasis: getRemainingCostBasis(transactions),
-    currentMarketValue: getCurrentMarketValue(transactions, marketPrices),
-    realizedGainLoss: getRealizedGainLoss(transactions),
-    unrealizedGainLoss: getUnrealizedGainLoss(transactions, marketPrices),
-    dividendIncome: getDividendIncome(transactions),
-    totalEconomicProfit: getTotalEconomicProfit(transactions, marketPrices),
-    simpleTotalReturn: getSimpleTotalReturn(transactions, marketPrices),
-    holdingPeriodDays: getHoldingPeriodDays(transactions, valuationDate),
+    totalInvestedCapital,
+    remainingCostBasis,
+    currentMarketValue,
+    realizedGainLoss,
+    unrealizedGainLoss,
+    dividendIncome,
+    totalEconomicProfit,
+    simpleTotalReturn: totalInvestedCapital === 0 ? 0 : roundTo(totalEconomicProfit / totalInvestedCapital, 6),
+    holdingPeriodDays: getHoldingPeriodDaysFromLots(analysis.lotsByTicker, valuationDate),
     xirr: getXirr(transactions, marketPrices, valuationDate),
   };
 }
@@ -401,6 +423,7 @@ export function getPortfolioMetrics(transactions, marketPrices, valuationDate) {
 export const calculationAssumptions = [
   "Realized gains and remaining cost basis use FIFO lots.",
   "When multiple trades share the same date, buys are processed before sells because the data model does not include intraday timestamps.",
+  "Valuation-date calculations use an end-of-day convention, so transactions dated on the valuation date are included before market value is measured.",
   "Holding period is the weighted-average age of currently open shares.",
   "XIRR uses dated cash flows and adds current market value on the valuation date as the terminal inflow.",
   "Dividend transactions use the explicit cash amount supplied in the data.",

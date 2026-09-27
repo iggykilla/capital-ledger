@@ -109,6 +109,15 @@ test("same-day buys are processed before same-day sells when only date precision
   assert.equal(getCurrentMarketValue(transactions, marketPrices), 55);
 });
 
+test("holding period treats valuation-date purchases as zero-day lots under the end-of-day convention", () => {
+  const transactions = [
+    { date: "2026-05-01", ticker: "DAY", type: "SELL", shares: 5, price: 12, fees: 0 },
+    { date: "2026-05-01", ticker: "DAY", type: "BUY", shares: 10, price: 10, fees: 0 },
+  ];
+
+  assert.equal(getHoldingPeriodDays(transactions, "2026-05-01"), 0);
+});
+
 test("portfolio metrics bundle the required calculation outputs", () => {
   const transactions = [{ date: "2026-01-01", ticker: "ONE", type: "BUY", shares: 1, price: 100, fees: 0 }];
   const marketPrices = { ONE: 110 };
