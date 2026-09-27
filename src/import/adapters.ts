@@ -1,4 +1,4 @@
-import { parseLocaleNumber } from './csv'
+import { parseLocaleNumber } from './csv.ts'
 import type { LedgerTransaction, LedgerTransactionType, StatementAdapter } from './types'
 
 const normalizedHeaders = ['date', 'type', 'currency']
@@ -33,7 +33,7 @@ export const capitalLedgerAdapter: StatementAdapter = {
         source: value.source || 'Capital Ledger',
         account: value.account || undefined,
         date: value.date,
-        type: allowedTypes.has(type) ? type : type,
+        type,
         ticker: value.ticker || undefined,
         isin: value.isin || undefined,
         quantity: parseLocaleNumber(value.quantity),
