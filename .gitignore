@@ -1,0 +1,9 @@
+.env
+.env.*
+config.local.js
+data/private/
+data/imports/
+*.statement.csv
+*.log
+.DS_Store
+Thumbs.db
